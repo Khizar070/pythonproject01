@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import os
 from io import BytesIO
-import openpyx1
 
 st.set_page_config(page_title="Data Sweeper", layout='wide')
 
