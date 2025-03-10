@@ -23,7 +23,7 @@ st.title("🧹 Datasweeper By Khizar Raza")
 st.write("Transform your files between CSV and Excel formats with built-in data cleaning & visualization")
 
 # File uploader
-uploaded_files = st.file_uploader("Upload your files (accepts CSV or Excel):", type=["csv", "xlsx"], accept_multiple_files=True)
+uploaded_files = st.file_uploader("Upload your files (accepts CSV or Excel):", type=["csv","xlsx"], accept_multiple_files=(True))
 
 if uploaded_files:
     for file in uploaded_files:
@@ -32,7 +32,7 @@ if uploaded_files:
         if file_ext == ".csv":
             df = pd.read_csv(file)
         elif file_ext == ".xlsx":
-            df = pd.read_excel(file, engine='openpyxl')  # Ensure openpyxl is used
+            df = pd.read_excel(file)
         else:
             st.error(f"Unsupported file type: {file_ext}")
             continue
@@ -67,23 +67,23 @@ if uploaded_files:
             st.bar_chart(df.select_dtypes(include="number").iloc[:, :2])
 
         # Conversion Options
+
+        
         st.subheader("♻️ Conversion Options")
         conversion_type = st.radio(f"Convert {file.name} to:", {"CSV", "Excel"}, key=file.name)
-
         if st.button(f"Convert {file.name}"):
             buffer = BytesIO()
             if conversion_type == "CSV":
                 df.to_csv(buffer, index=False)
-                buffer.seek(0)  # Reset buffer position
                 file_name = file.name.replace(file_ext, ".csv")
                 mime_type = "text/csv"
 
             elif conversion_type == "Excel":
-                df.to_excel(buffer, index=False)  # Use openpyxl explicitly
-                buffer.seek(0)  # Reset buffer position
+                df.to_excel(buffer, index=False)
                 file_name = file.name.replace(file_ext, ".xlsx")
                 mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-
+            buffer.seek(0)
+            
             st.download_button(
                 label=f"Download {file.name} as {conversion_type}",
                 data=buffer,
